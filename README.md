@@ -17,6 +17,10 @@ In order to run this project you just only have Docker and Docker-compose instal
 Once you have cloned the project run:
 > docker-compose up
 
+> docker exec -it Laravel_php bash -c "composer install"
+
+> docker exec -it Laravel_php bash -c "chmod -R 777 -R ./storage/."
+
 To enter inside the project run:
 > docker exec -it Laravel_php bash
 
