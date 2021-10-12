@@ -38,7 +38,7 @@ class CustomerService
     /**
      * @return mixed
      */
-    public function getPhones()
+    public function getPhones(): array
     {
         return $this->customerRepo->findBy('phone');
     }

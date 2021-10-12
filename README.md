@@ -6,9 +6,11 @@ Phone numbers are categorized by country, state (valid or not valid), country co
 
 The page renders a list of all phone numbers available in the DB, and you can filter by country and state.
 
+You can add more countries configuration in config/country_code_regex.php file
+
 ## Requirements
 
-In order to run this project you just only have Docker installed.
+In order to run this project you just only have Docker and Docker-compose installed.
 
 ## Up & Running
 

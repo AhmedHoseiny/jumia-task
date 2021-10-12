@@ -4,5 +4,5 @@ namespace App\Repositories;
 
 interface CustomerRepoInterface
 {
-    public function findBy(string $findBy);
+    public function findBy(string $findBy): array;
 }

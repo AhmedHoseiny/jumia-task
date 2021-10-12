@@ -24,7 +24,7 @@ class CustomerRepository implements CustomerRepoInterface
      * @param string $findBy
      * @return mixed
      */
-    public function findBy(string $findBy)
+    public function findBy(string $findBy): array
     {
         return $this->customer->select($findBy)->get()->toArray();
     }
