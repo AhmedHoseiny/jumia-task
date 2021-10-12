@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Repositories\CustomerRepoInterface;
 use App\Repositories\CustomerRepository;
+use App\Traits\CustomerPhoneParsableTrait;
 
 /**
  * Class CustomerService
@@ -10,6 +12,8 @@ use App\Repositories\CustomerRepository;
  */
 class CustomerService
 {
+    use CustomerPhoneParsableTrait;
+
     /**
      * @var CustomerRepository
      */
@@ -18,17 +22,17 @@ class CustomerService
     /**
      * @var \Illuminate\Config\Repository|\Illuminate\Contracts\Foundation\Application|mixed
      */
-    private $countriesValidation;
+    private $countriesConfig;
 
     /**
      * CustomerService constructor.
      * @param CustomerRepository $customerRepo
      */
-    public function __construct(CustomerRepository $customerRepo)
+    public function __construct(CustomerRepoInterface $customerRepo)
     {
         $this->customerRepo = $customerRepo;
 
-        $this->countriesValidation = config('country_code_regex');
+        $this->countriesConfig = config('country_code_regex');
     }
 
     /**
@@ -43,81 +47,9 @@ class CustomerService
      * @param $phones
      * @return array
      */
-    public function parseData($phones): array
+    public function extract($phones): array
     {
-        $parsed = [];
-
-        foreach ($phones as $key => $value)
-        {
-            $phoneArray = explode(' ', $value['phone']);
-
-            $parsed[$key]['country'] = $this->getCountry($value['phone']);
-            $parsed[$key]['state'] = $this->getState($value['phone']);
-            $parsed[$key]['code'] = $this->getCode($value['phone']);
-            $parsed[$key]['number'] = end($phoneArray);
-        }
-
-        return $parsed;
-    }
-
-    /**
-     * @param $value
-     * @return string
-     */
-    public function getCountry($value): string
-    {
-        $country = '';
-
-        foreach ($this->countriesValidation as $key => $validator)
-        {
-            preg_match('/' . substr($validator['regex'], 0, 10) . '/', $value, $matches);
-
-            if (sizeof($matches) > 0) {
-                $country = $key;
-            }
-        }
-
-        return $country;
-    }
-
-    /**
-     * @param $value
-     * @return bool
-     */
-    public function getState($value): bool
-    {
-        $valid = false;
-
-        foreach ($this->countriesValidation as $validator)
-        {
-            preg_match('/' . $validator['regex'] . '/', $value, $matches);
-
-            if (sizeof($matches) > 0) {
-                $valid = true;
-            }
-        }
-
-        return $valid;
-    }
-
-    /**
-     * @param $value
-     * @return string
-     */
-    public function getCode($value): string
-    {
-        $code = '';
-
-        foreach ($this->countriesValidation as $validator)
-        {
-            preg_match('/' . substr($validator['regex'], 0, 10) . '/', $value, $matches);
-
-            if (sizeof($matches) > 0) {
-                $code = $validator['code'];
-            }
-        }
-
-        return $code;
+        return $this->parse($phones);
     }
 
     /**
@@ -125,7 +57,7 @@ class CustomerService
      * @param array $filters
      * @return array
      */
-    public function filterData(array $result, array $filters): array
+    public function filter(array $result, array $filters): array
     {
         $filtered = $result;
 

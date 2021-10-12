@@ -8,16 +8,16 @@ use App\Models\Customer;
  * Class CustomerRepository
  * @package App\Repositories
  */
-class CustomerRepository
+class CustomerRepository implements CustomerRepoInterface
 {
     /**
      * @var Customer
      */
     private $customer;
 
-    public function __construct(Customer $customer)
+    public function __construct()
     {
-        $this->customer = $customer;
+        $this->customer = new Customer();
     }
 
     /**

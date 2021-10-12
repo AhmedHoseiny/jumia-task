@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CustomerRequest;
+use App\Repositories\CustomerRepository;
 use App\Services\CustomerService;
 
 /**
@@ -16,13 +17,9 @@ class CustomerController extends Controller
      */
     private $customerService;
 
-    /**
-     * CustomerController constructor.
-     * @param CustomerService $customerService
-     */
-    public function __construct(CustomerService $customerService)
+    public function __construct()
     {
-        $this->customerService = $customerService;
+        $this->customerService = new CustomerService(new CustomerRepository());
     }
 
     /**
@@ -33,11 +30,11 @@ class CustomerController extends Controller
     {
         $phones = $this->customerService->getPhones();
 
-        $result = $this->customerService->parseData($phones);
+        $result = $this->customerService->extract($phones);
 
         if ($request->has('country', 'state')) {
             $filters = $request->all();
-            $result = $this->customerService->filterData($result, $filters);
+            $result = $this->customerService->filter($result, $filters);
         }
 
         return view('customer_phones', ['result' => $result]);
